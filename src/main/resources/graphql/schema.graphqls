@@ -1,0 +1,13 @@
+scalar Upload
+
+type Query {
+	hello: String
+}
+
+type Mutation {
+	uploadTallyXml(file: Upload!): UploadTallyXmlResponse
+}
+
+type UploadTallyXmlResponse {
+	message: String
+}
