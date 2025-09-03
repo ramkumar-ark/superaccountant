@@ -5,30 +5,42 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>3.3.1</version>
+		<relativePath/>
 	</parent>
 	<groupId>com.superaccountant</groupId>
 	<artifactId>superaccountant</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>superaccountant</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Resolve a known version conflict in the transitive dependencies of graphiql -->
+			<!-- This forces Maven to use a single version of the conflicting library. -->
+			<dependency>
+				<groupId>org.webjars.npm</groupId>
+				<artifactId>types__codemirror</artifactId>
+				<version>5.60.8</version>
+			</dependency>
+			<!-- Resolve another transitive dependency conflict from graphiql -->
+			<dependency>
+				<groupId>org.webjars.npm</groupId>
+				<artifactId>react-aria__interactions</artifactId>
+				<version>3.25.3</version>
+			</dependency>
+			<!-- And another one... for clsx -->
+			<dependency>
+				<groupId>org.webjars.npm</groupId>
+				<artifactId>clsx</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -63,17 +75,34 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- Add H2 database for running tests without a live Postgres instance -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.graphql</groupId>
 			<artifactId>spring-graphql-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- Dependencies to serve GraphiQL assets locally with the official Spring GraphQL starter -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>graphiql</artifactId>
+			<version>3.0.6</version>
 		</dependency>
 	</dependencies>
 
@@ -82,26 +111,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

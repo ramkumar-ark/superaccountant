@@ -1,13 +1,82 @@
-scalar Upload
-
 type Query {
-	hello: String
+	"""
+	Generates and returns an XML string for all vouchers.
+	"""
+	getVouchersAsXml: String
+
+	"""
+	Retrieves the most recently staged Tally XML data by its original file name.
+	"""
+	getStagedXml(fileName: String!): TallyXmlData
 }
 
 type Mutation {
-	uploadTallyXml(file: Upload!): UploadTallyXmlResponse
+	"""
+	Updates an existing voucher by its ID.
+	"""
+	updateVoucher(id: ID!, voucher: VoucherInput!): Voucher
 }
 
-type UploadTallyXmlResponse {
-	message: String
+"""
+Input type for creating or updating a Voucher.
+"""
+input VoucherInput {
+	remoteId: String
+	voucherKey: String
+	voucherType: String
+	action: String
+	date: String
+	guid: String
+	narration: String
+	partyLedgerName: String
+	voucherTypeName: String
+	voucherNumber: String
+	ledgerEntries: [LedgerEntryInput]
+}
+
+"""
+Input type for creating or updating a Ledger Entry.
+"""
+input LedgerEntryInput {
+	ledgerName: String
+	isDeemedPositive: Boolean
+	amount: Float
+}
+
+"""
+Represents a single entry in a voucher's ledger.
+"""
+type LedgerEntry {
+	id: ID!
+	ledgerName: String
+	isDeemedPositive: Boolean
+	amount: Float
+	# The 'voucher' field is omitted to prevent circular references in the API.
+}
+
+"""
+Represents a financial voucher.
+"""
+type Voucher {
+	id: ID!
+	remoteId: String
+	voucherKey: String
+	voucherType: String
+	action: String
+	date: String
+	guid: String
+	narration: String
+	partyLedgerName: String
+	voucherTypeName: String
+	voucherNumber: String
+	ledgerEntries: [LedgerEntry]
+}
+
+"""
+Represents staged XML data from an upload. (Placeholder - adjust fields as needed)
+"""
+type TallyXmlData {
+	id: ID!
+	fileName: String
+	xmlContent: String
 }

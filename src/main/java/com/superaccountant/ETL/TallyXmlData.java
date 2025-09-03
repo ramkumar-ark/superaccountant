@@ -1,54 +1,37 @@
 package com.superaccountant.ETL;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "tally_xml_data")
+@Getter
+@Setter
+@NoArgsConstructor
 public class TallyXmlData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "file_name")
     private String fileName;
 
     @Lob
+    @Column(name = "xml_content", columnDefinition = "TEXT")
     private String xmlContent;
 
-    public TallyXmlData() {
-    }
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
     public TallyXmlData(String fileName, String xmlContent) {
         this.fileName = fileName;
-        this.xmlContent = xmlContent;
-    }
-
-    // Getters and setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getXmlContent() {
-        return xmlContent;
-    }
-
-    public void setXmlContent(String xmlContent) {
         this.xmlContent = xmlContent;
     }
 }

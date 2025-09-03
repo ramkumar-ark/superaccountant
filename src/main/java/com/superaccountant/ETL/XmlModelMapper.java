@@ -1,0 +1,45 @@
+package com.superaccountant.ETL;
+
+import com.superaccountant.ETL.model.LedgerEntryXml;
+import com.superaccountant.ETL.model.VoucherXml;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
+
+@Component
+public class XmlModelMapper {
+
+    public VoucherXml toVoucherXml(Voucher voucher) {
+        if (voucher == null) {
+            return null;
+        }
+
+        VoucherXml voucherXml = new VoucherXml();
+        voucherXml.setRemoteId(voucher.getRemoteId());
+        voucherXml.setVoucherKey(voucher.getVoucherKey());
+        voucherXml.setVoucherType(voucher.getVoucherType());
+        voucherXml.setAction(voucher.getAction());
+        voucherXml.setDate(voucher.getDate());
+        voucherXml.setGuid(voucher.getGuid());
+        voucherXml.setNarration(voucher.getNarration());
+        voucherXml.setPartyLedgerName(voucher.getPartyLedgerName());
+        voucherXml.setVoucherTypeName(voucher.getVoucherTypeName());
+        voucherXml.setVoucherNumber(voucher.getVoucherNumber());
+
+        if (voucher.getLedgerEntries() != null) {
+            voucherXml.setLedgerEntries(voucher.getLedgerEntries().stream()
+                    .map(this::toLedgerEntryXml)
+                    .collect(Collectors.toList()));
+        }
+
+        return voucherXml;
+    }
+
+    private LedgerEntryXml toLedgerEntryXml(LedgerEntry ledgerEntry) {
+        LedgerEntryXml ledgerEntryXml = new LedgerEntryXml();
+        ledgerEntryXml.setLedgerName(ledgerEntry.getLedgerName());
+        ledgerEntryXml.setIsDeemedPositive(ledgerEntry.getIsDeemedPositive() ? "Yes" : "No");
+        ledgerEntryXml.setAmount(ledgerEntry.getAmount());
+        return ledgerEntryXml;
+    }
+}
