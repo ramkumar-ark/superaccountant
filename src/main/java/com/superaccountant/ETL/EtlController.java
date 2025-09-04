@@ -18,14 +18,17 @@ public class EtlController {
 
     private final VoucherRepository voucherRepository;
     private final XmlGenerationService xmlGenerationService;
+    private final CompanyRepository companyRepository;
     private final VoucherInputMapper voucherInputMapper;
     private final TallyXmlDataRepository tallyXmlDataRepository;
 
     @Autowired
     public EtlController(VoucherRepository voucherRepository, XmlGenerationService xmlGenerationService,
-            VoucherInputMapper voucherInputMapper, TallyXmlDataRepository tallyXmlDataRepository) {
+            CompanyRepository companyRepository, VoucherInputMapper voucherInputMapper,
+            TallyXmlDataRepository tallyXmlDataRepository) {
         this.voucherRepository = voucherRepository;
         this.xmlGenerationService = xmlGenerationService;
+        this.companyRepository = companyRepository;
         this.voucherInputMapper = voucherInputMapper;
         this.tallyXmlDataRepository = tallyXmlDataRepository;
     }
@@ -41,14 +44,19 @@ public class EtlController {
     }
 
     @QueryMapping
-    public String getVouchersAsXml() {
-        List<Voucher> vouchers = voucherRepository.findAll();
+    public String getVouchersAsXml(@Argument String companyName) {
+        Company company = companyRepository.findByName(companyName)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with name: " + companyName));
+        List<Voucher> vouchers = voucherRepository.findAllByCompany(company);
         return xmlGenerationService.generateXml(vouchers);
     }
 
     @QueryMapping
-    public TallyXmlData getStagedXml(@Argument String fileName) {
-        return tallyXmlDataRepository.findTopByFileNameOrderByIdDesc(fileName)
-                .orElseThrow(() -> new ResourceNotFoundException("No staged XML found for file: " + fileName));
+    public TallyXmlData getStagedXml(@Argument String companyName, @Argument String fileName) {
+        Company company = companyRepository.findByName(companyName)
+                .orElseThrow(() -> new ResourceNotFoundException("Company not found with name: " + companyName));
+        return tallyXmlDataRepository.findTopByCompanyAndFileNameOrderByIdDesc(company, fileName)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No staged XML found for file '" + fileName + "' in company '" + companyName + "'"));
     }
 }
