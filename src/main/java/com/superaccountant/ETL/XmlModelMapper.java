@@ -27,7 +27,7 @@ public class XmlModelMapper {
         voucherXml.setVoucherNumber(voucher.getVoucherNumber());
 
         if (voucher.getLedgerEntries() != null) {
-            voucherXml.setLedgerEntries(voucher.getLedgerEntries().stream()
+            voucherXml.setAllLedgerEntriesList(voucher.getLedgerEntries().stream()
                     .map(this::toLedgerEntryXml)
                     .collect(Collectors.toList()));
         }
