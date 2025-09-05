@@ -11,4 +11,13 @@ public class TallyMessage {
 
     @XmlElement(name = "VOUCHER")
     private VoucherXml voucher;
+
+    @XmlElement(name = "LEDGER")
+    private LedgerMasterXml ledger;
+
+    @XmlElement(name = "GROUP")
+    private GroupMasterXml group;
+
+    @XmlElement(name = "VOUCHERTYPE")
+    private VoucherTypeMasterXml voucherType;
 }

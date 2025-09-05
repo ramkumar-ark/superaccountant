@@ -20,11 +20,14 @@ public class LedgerEntry {
     @EqualsAndHashCode.Include
     private Long id;
 
-    private String ledgerName;
     private Boolean isDeemedPositive;
     private Double amount;
 
     @ManyToOne
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ledger_master_id")
+    private LedgerMaster ledgerMaster;
 }

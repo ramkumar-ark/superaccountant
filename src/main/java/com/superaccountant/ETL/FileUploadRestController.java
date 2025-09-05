@@ -27,18 +27,24 @@ public class FileUploadRestController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<UploadTallyXmlResponse> uploadTallyXml(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<UploadTallyXmlResponse> uploadTallyXml(
+            @RequestParam("mastersFile") MultipartFile mastersFile,
+            @RequestParam("transactionsFile") MultipartFile transactionsFile,
             @RequestParam("companyName") String companyName)
             throws JAXBException, IOException {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body(new UploadTallyXmlResponse("File is empty"));
+        if (mastersFile.isEmpty() || transactionsFile.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(new UploadTallyXmlResponse("Both masters and transactions files are required."));
         }
         if (companyName == null || companyName.isBlank()) {
             return ResponseEntity.badRequest().body(new UploadTallyXmlResponse("Company name is required"));
         }
 
-        xmlParsingService.parseAndSave(file, companyName);
-        String successMessage = "File uploaded and parsed successfully: " + file.getOriginalFilename();
+        xmlParsingService.parseAndSave(mastersFile, transactionsFile, companyName);
+        String successMessage = String.format(
+                "Files uploaded and parsed successfully. Masters: '%s', Transactions: '%s'",
+                mastersFile.getOriginalFilename(),
+                transactionsFile.getOriginalFilename());
         return ResponseEntity.ok(new UploadTallyXmlResponse(successMessage));
     }
 

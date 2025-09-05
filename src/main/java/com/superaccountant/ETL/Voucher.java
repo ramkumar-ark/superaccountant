@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = { "ledgerEntries", "company" }) // Exclude to avoid circular dependency issues in logs
+@ToString(exclude = { "ledgerEntries", "company", "partyLedgerMaster" }) // Exclude to avoid circular dependency issues
 public class Voucher {
 
     @Id
@@ -29,13 +29,20 @@ public class Voucher {
     private String date;
     private String guid;
     private String narration;
-    private String partyLedgerName;
-    private String voucherTypeName;
-    private String voucherNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "party_ledger_master_id")
+    private LedgerMaster partyLedgerMaster;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voucher_type_master_id")
+    private VoucherTypeMaster voucherTypeMaster;
+
+    private String voucherNumber;
 
     @OneToMany(mappedBy = "voucher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LedgerEntry> ledgerEntries;

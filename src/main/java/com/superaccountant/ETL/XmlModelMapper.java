@@ -22,8 +22,12 @@ public class XmlModelMapper {
         voucherXml.setDate(voucher.getDate());
         voucherXml.setGuid(voucher.getGuid());
         voucherXml.setNarration(voucher.getNarration());
-        voucherXml.setPartyLedgerName(voucher.getPartyLedgerName());
-        voucherXml.setVoucherTypeName(voucher.getVoucherTypeName());
+        if (voucher.getPartyLedgerMaster() != null) {
+            voucherXml.setPartyLedgerName(voucher.getPartyLedgerMaster().getName());
+        }
+        if (voucher.getVoucherTypeMaster() != null) {
+            voucherXml.setVoucherTypeName(voucher.getVoucherTypeMaster().getName());
+        }
         voucherXml.setVoucherNumber(voucher.getVoucherNumber());
 
         if (voucher.getLedgerEntries() != null) {
@@ -37,7 +41,7 @@ public class XmlModelMapper {
 
     private LedgerEntryXml toLedgerEntryXml(LedgerEntry ledgerEntry) {
         LedgerEntryXml ledgerEntryXml = new LedgerEntryXml();
-        ledgerEntryXml.setLedgerName(ledgerEntry.getLedgerName());
+        ledgerEntryXml.setLedgerName(ledgerEntry.getLedgerMaster().getName());
         ledgerEntryXml.setIsDeemedPositive(ledgerEntry.getIsDeemedPositive() ? "Yes" : "No");
         ledgerEntryXml.setAmount(ledgerEntry.getAmount());
         return ledgerEntryXml;
